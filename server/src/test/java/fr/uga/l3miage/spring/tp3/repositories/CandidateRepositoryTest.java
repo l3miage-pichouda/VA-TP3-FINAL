@@ -4,10 +4,6 @@ import fr.uga.l3miage.spring.tp3.enums.TestCenterCode;
 import fr.uga.l3miage.spring.tp3.models.CandidateEntity;
 import fr.uga.l3miage.spring.tp3.models.CandidateEvaluationGridEntity;
 import fr.uga.l3miage.spring.tp3.models.TestCenterEntity;
-import fr.uga.l3miage.spring.tp3.repositories.CandidateEvaluationGridRepository;
-import fr.uga.l3miage.spring.tp3.repositories.CandidateRepository;
-import fr.uga.l3miage.spring.tp3.repositories.TestCenterRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -63,26 +59,26 @@ public class CandidateRepositoryTest {
 
     @Test
     void testFindAllByCandidateEvaluationGridEntitiesGradeLessThan(){
-        CandidateEntity candidateEntity= CandidateEntity
+        CandidateEntity John= CandidateEntity
                 .builder()
                 .firstname("John")
                 .email("test@test2.fr")
                 .build();
-        CandidateEntity candidateEntity1= CandidateEntity
+        CandidateEntity Adrien= CandidateEntity
                 .builder()
                 .firstname("Adrien")
                 .email("test@test.fr")
                 .build();
-        candidateRepository.save(candidateEntity);
-        candidateRepository.save(candidateEntity1);
+        candidateRepository.save(John);
+        candidateRepository.save(Adrien);
         CandidateEvaluationGridEntity candidateEvaluationGridEntity =CandidateEvaluationGridEntity
                 .builder()
                 .grade(10.1)
-                .candidateEntity(candidateEntity)
+                .candidateEntity(John)
                 .build();
         CandidateEvaluationGridEntity candidateEvaluationGridEntity1 =CandidateEvaluationGridEntity
                 .builder()
-                .candidateEntity(candidateEntity1)
+                .candidateEntity(Adrien)
                 .grade(9)
                 .build();
         candidateEvaluationGridRepository.save(candidateEvaluationGridEntity);
@@ -91,15 +87,15 @@ public class CandidateRepositoryTest {
         set1.add(candidateEvaluationGridEntity1);
         Set<CandidateEvaluationGridEntity>set2=new HashSet<>();
         set2.add(candidateEvaluationGridEntity);
-        candidateEntity.setCandidateEvaluationGridEntities(set1);
-        candidateEntity1.setCandidateEvaluationGridEntities(set2);
-        candidateRepository.save(candidateEntity);
-        candidateRepository.save(candidateEntity1);
+        John.setCandidateEvaluationGridEntities(set1);
+        Adrien.setCandidateEvaluationGridEntities(set2);
+        candidateRepository.save(John);
+        candidateRepository.save(Adrien);
 
 
         Set<CandidateEntity> responses = candidateRepository.findAllByCandidateEvaluationGridEntitiesGradeLessThan(10);
         assertThat(responses).hasSize(1);
-        assertThat(responses.stream().findFirst().get().getCandidateEvaluationGridEntities().stream().findFirst().get().getGrade()).isEqualTo(9);
+        assertThat(responses.stream().findFirst().get().getFirstname()).isEqualTo("Adrien");
     }
 
     @Test

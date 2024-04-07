@@ -4,6 +4,7 @@ import fr.uga.l3miage.spring.tp3.components.ExamComponent;
 import fr.uga.l3miage.spring.tp3.components.SessionComponent;
 import fr.uga.l3miage.spring.tp3.enums.SessionStatus;
 import fr.uga.l3miage.spring.tp3.exceptions.rest.CreationSessionRestException;
+import fr.uga.l3miage.spring.tp3.exceptions.rest.NotFoundSessionEntityRestException;
 import fr.uga.l3miage.spring.tp3.exceptions.technical.ExamNotFoundException;
 import fr.uga.l3miage.spring.tp3.exceptions.technical.NotFoundSessionEntityException;
 import fr.uga.l3miage.spring.tp3.mappers.SessionMapper;
@@ -50,13 +51,10 @@ public class SessionServiceTest {
     @Test
     void testCreateSessionSuccess() throws ExamNotFoundException {
         // given
-        SessionProgrammationCreationRequest programmation = SessionProgrammationCreationRequest.builder()
-                .steps(Set.of())
-                .build();
+
 
         SessionCreationRequest request =SessionCreationRequest.builder()
-                .name("Session Printemps 2024")
-                .ecosSessionProgrammation(programmation)
+                .name("Examen Session 1")
                 .examsId(Set.of())
                 .build();
 
@@ -80,7 +78,7 @@ public class SessionServiceTest {
     void testCreateSessionFailed() throws ExamNotFoundException{
         // given
         SessionCreationRequest request = SessionCreationRequest.builder()
-                .name("Session Printemps 2024")
+                .name("Examen Session 1")
                 .ecosSessionProgrammation(SessionProgrammationCreationRequest.builder()
                         .steps(Set.of()) // Assurez-vous que cela est conforme à votre structure de données
                         .build())
@@ -104,7 +102,7 @@ public class SessionServiceTest {
         EcosSessionEntity session = EcosSessionEntity
                 .builder()
                 .id(id)
-                .name("Session normale")
+                .name("Examen Session 1")
                 .status(SessionStatus.EVAL_STARTED)
                 .build();
         ExamEntity exam = ExamEntity
@@ -126,7 +124,7 @@ public class SessionServiceTest {
         // Simuler le comportement de sessionMapper pour convertir la session et l'examen en leurs DTOs correspondants
         SessionResponse sessionResponse = SessionResponse.builder()
                 .id(id)
-                .name("Session normale")
+                .name("Examen Session 1")
                 .status(fr.uga.l3miage.spring.tp3.responses.enums.SessionStatus.EVAL_ENDED) // Le statut doit être mis à jour pour refléter la fin de la session
                 .examEntities(exams.stream().map(examEntity -> {
                     return ExamResponse.builder()
@@ -149,6 +147,23 @@ public class SessionServiceTest {
 
         verify(sessionComponent,times(1)).endSessionEvaluation(id);
         verify(sessionMapper,times(1)).toResponse(any(EcosSessionEntity.class));
+    }
+
+    @Test
+    void testEndSessionEvaluationFail() throws NotFoundSessionEntityRestException, NotFoundSessionEntityException {
+        //given
+        Long id = 123174L;
+
+        // Simuler le comportement de sessionComponent pour lancer une NotFoundSessionEntityRestExeption lorsque la session n'est pas trouvée
+        when(sessionComponent.endSessionEvaluation(id)).thenThrow(new NotFoundSessionEntityRestException("Session non trouvée"));
+
+        // When & Then
+        assertThrows(NotFoundSessionEntityRestException.class, () -> sessionService.endSessionEvaluation(id),
+                "Une exception aurait dû être levée lorsque la session n'est pas trouvée");
+
+        // Vérifier que les méthodes mockées ont été appelées comme prévu
+        verify(sessionComponent).endSessionEvaluation(id);
+        verifyNoInteractions(sessionMapper); // Aucune interaction avec sessionMapper ne devrait avoir lieu
     }
 
 }

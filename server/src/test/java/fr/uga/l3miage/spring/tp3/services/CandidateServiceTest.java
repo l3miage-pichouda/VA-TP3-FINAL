@@ -40,8 +40,8 @@ public class CandidateServiceTest {
     void TestGetCandidateAverageSuccess() throws CandidateNotFoundException {
         // given
         Long candidateId = 12345L;
-        ExamEntity mathExam = ExamEntity.builder().name("Math").weight(2).build();
-        ExamEntity historyExam = ExamEntity.builder().name("History").weight(3).build();
+        ExamEntity mathExam = ExamEntity.builder().name("Biologie").weight(2).build();
+        ExamEntity historyExam = ExamEntity.builder().name("Mathématiques").weight(3).build();
         CandidateEvaluationGridEntity grid1 = CandidateEvaluationGridEntity.builder()
                 .grade(8.0)
                 .examEntity(mathExam)
