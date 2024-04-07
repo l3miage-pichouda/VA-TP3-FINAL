@@ -16,7 +16,7 @@ public class CandidateService {
         try {
             CandidateEntity candidateEntity = candidateComponent.getCandidatById(candidateId);
             return (candidateEntity.getCandidateEvaluationGridEntities().stream().reduce(0d, (average, grid) -> average + (grid.getGrade() * grid.getExamEntity().getWeight()), Double::sum))
-                    / candidateEntity.getCandidateEvaluationGridEntities().toArray().length;
+                    / candidateEntity.getCandidateEvaluationGridEntities().stream().reduce(0,(acc,grid) -> acc + grid.getExamEntity().getWeight(),Integer::sum);
         } catch (CandidateNotFoundException e) {
             throw new CandidateNotFoundRestException(e.getMessage(),e.getCandidateId());
         }

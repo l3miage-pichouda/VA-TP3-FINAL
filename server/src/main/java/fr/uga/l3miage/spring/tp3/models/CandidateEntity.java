@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.time.LocalDate;
@@ -22,7 +23,7 @@ public class CandidateEntity extends UserEntity {
     private LocalDate birthDate;
     private boolean hasExtraTime;
 
-    @OneToMany(mappedBy = "candidateEntity")
+    @OneToMany(mappedBy = "candidateEntity", fetch = FetchType.EAGER)
     private Set<CandidateEvaluationGridEntity> candidateEvaluationGridEntities;
 
     @ManyToOne
