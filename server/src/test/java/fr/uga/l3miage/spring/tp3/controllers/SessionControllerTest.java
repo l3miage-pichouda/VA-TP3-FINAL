@@ -124,7 +124,7 @@ public class SessionControllerTest {
     }
 
     @Test
-    public void whenUpdateSessionStateCausesConflict_thenReceiveConflictResponse() {
+    public void whenUpdateSessionStateCausesConflict() {
         EcosSessionEntity session = EcosSessionEntity.builder()
                 .name("Test Session")
                 .status(SessionStatus.EVAL_ENDED)
