@@ -30,7 +30,7 @@ public class CandidateServiceTest {
 
     @MockBean
     private CandidateComponent candidateComponent;
-    
+
     @Test
     void TestGetCandidateAverageSuccess() throws CandidateNotFoundException {
         // given
