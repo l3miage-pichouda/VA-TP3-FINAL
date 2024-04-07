@@ -32,8 +32,6 @@ public class CandidateControllerTest {
     @Autowired
     private CandidateRepository candidateRepository;
 
-
-
     @AfterEach
     public void clear() {
         candidateRepository.deleteAll();
